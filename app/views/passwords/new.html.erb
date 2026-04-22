@@ -1,0 +1,31 @@
+<section class="hero w-full">
+  <div class="hero-content w-full max-w-md px-0">
+    <div class="card w-full bg-base-100 shadow-xl">
+      <div class="card-body gap-5">
+        <% if alert = flash[:alert] %>
+          <div class="alert alert-error" id="alert"><span><%= alert %></span></div>
+        <% end %>
+
+        <div class="space-y-2">
+          <h1 class="text-3xl font-black tracking-tight">Reset password</h1>
+          <p class="text-sm text-base-content/70">We’ll email you a reset link if the address exists.</p>
+        </div>
+
+        <%= form_with url: passwords_path, class: "space-y-4" do |form| %>
+          <label class="form-control w-full">
+            <div class="label">
+              <span class="label-text">Email</span>
+            </div>
+            <%= form.email_field :email_address, required: true, autofocus: true, autocomplete: "username", placeholder: "you@example.com", value: params[:email_address], class: "input input-bordered w-full" %>
+          </label>
+
+          <%= form.submit "Email reset instructions", class: "btn btn-neutral w-full" %>
+        <% end %>
+
+        <div class="text-sm">
+          <%= link_to "Back to sign in", new_session_path, class: "link" %>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>

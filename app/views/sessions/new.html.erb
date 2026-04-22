@@ -1,0 +1,56 @@
+<section class="hero w-full">
+  <div class="hero-content w-full max-w-md px-0">
+    <div class="card w-full bg-base-100 shadow-xl">
+      <div class="card-body gap-5">
+        <% if alert = flash[:alert] %>
+          <div class="alert alert-error" id="alert"><span><%= alert %></span></div>
+        <% end %>
+
+        <% if notice = flash[:notice] %>
+          <div class="alert alert-success" id="notice"><span><%= notice %></span></div>
+        <% end %>
+
+        <div class="space-y-2">
+          <h1 class="text-3xl font-black tracking-tight">Sign in</h1>
+          <p class="text-sm text-base-content/70">Post BMX street shots, toy setups, and session photos.</p>
+        </div>
+
+        <%= form_with url: session_url, class: "space-y-4" do |form| %>
+          <label class="form-control w-full">
+            <div class="label">
+              <span class="label-text">Email</span>
+            </div>
+            <%= form.email_field :email_address, required: true, autofocus: true, autocomplete: "username", placeholder: "you@example.com", value: params[:email_address], class: "input input-bordered w-full" %>
+          </label>
+
+          <label class="form-control w-full">
+            <div class="label">
+              <span class="label-text">Password</span>
+            </div>
+            <%= form.password_field :password, required: true, autocomplete: "current-password", placeholder: "Enter your password", maxlength: 72, class: "input input-bordered w-full" %>
+          </label>
+
+          <label class="label cursor-pointer justify-start gap-3">
+            <%= form.check_box :remember_me, class: "checkbox" %>
+            <span class="label-text">Remember me</span>
+          </label>
+
+          <%= form.submit "Sign in", class: "btn btn-neutral w-full" %>
+        <% end %>
+
+        <% if google_oauth_enabled? %>
+          <div class="divider text-xs uppercase tracking-[0.24em] text-base-content/40">or</div>
+
+          <%= button_to "/auth/google_oauth2", method: :post, form: { data: { turbo: false } }, class: "btn w-full rounded-full border border-base-300 bg-base-100 text-base-content shadow-none hover:bg-base-200" do %>
+            Continue with Google
+          <% end %>
+        <% end %>
+
+        <div class="flex items-center justify-between text-sm">
+          <%= link_to "Forgot password?", new_password_path, class: "link link-hover" %>
+          <%= link_to "Create account", new_user_path, class: "link" %>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>

@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="lofi">
+  <head>
+    <title><%= content_for(:title) || "Streettoys" %></title>
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="application-name" content="Streettoys">
+    <meta name="mobile-web-app-capable" content="yes">
+    <%= csrf_meta_tags %>
+    <%= csp_meta_tag %>
+
+    <%= yield :head %>
+
+    <%# Enable PWA manifest for installable apps (make sure to enable in config/routes.rb too!) %>
+    <%#= tag.link rel: "manifest", href: pwa_manifest_path(format: :json) %>
+
+    <link rel="icon" href="/icon.png" type="image/png">
+    <link rel="icon" href="/icon.svg" type="image/svg+xml">
+    <link rel="apple-touch-icon" href="/icon.png">
+
+    <%# Includes all stylesheet files in app/assets/stylesheets %>
+    <%= stylesheet_link_tag :app, "data-turbo-track": "reload" %>
+    <%= javascript_importmap_tags %>
+    <script>
+      (() => {
+        const savedTheme = localStorage.getItem("streettoys-theme");
+        const theme = savedTheme || (window.matchMedia("(prefers-color-scheme: dark)").matches ? "dim" : "lofi");
+        document.documentElement.setAttribute("data-theme", theme);
+      })();
+    </script>
+  </head>
+
+  <body class="min-h-screen bg-base-200 text-base-content transition-colors">
+    <div class="min-h-screen bg-base-200">
+      <header class="sticky top-0 z-30 border-b border-base-300 bg-base-100/92 backdrop-blur-md">
+        <div class="navbar mx-auto max-w-6xl px-4 sm:px-6 lg:px-8">
+          <div class="flex-1">
+            <%= link_to root_path, class: "group flex items-center gap-3" do %>
+              <div class="grid h-11 w-11 place-items-center rounded-[2%] border border-base-300 bg-base-100 text-base-content transition-colors group-hover:border-base-content group-hover:bg-base-content group-hover:text-base-100">S</div>
+              <div>
+                <div class="text-lg font-black tracking-tight">Streettoys</div>
+                <div class="text-xs uppercase tracking-[0.25em] text-base-content/50">BMX + toy street photos</div>
+              </div>
+            <% end %>
+          </div>
+
+          <div class="flex flex-wrap items-center justify-end gap-2">
+            <%= link_to "Feed", posts_path, class: "btn btn-ghost btn-sm rounded-full px-4" %>
+            <%= link_to "Profiles", profiles_path, class: "btn btn-ghost btn-sm rounded-full px-4" %>
+            <button type="button" class="btn btn-ghost btn-sm rounded-full px-4" data-theme-toggle>
+              <span data-theme-label>Dark mode</span>
+            </button>
+
+            <% if authenticated? %>
+              <%= link_to(Current.user.profile ? "My profile" : "Create profile", Current.user.profile || new_profile_path, class: "btn btn-ghost btn-sm rounded-full px-4") %>
+              <%= link_to "New post", new_post_path, class: "btn btn-neutral btn-sm rounded-full px-5" %>
+              <%= button_to "Sign out", session_path, method: :delete, class: "btn btn-ghost btn-sm rounded-full px-4" %>
+            <% else %>
+              <%= link_to "Sign in", new_session_path, class: "btn btn-ghost btn-sm rounded-full px-4" %>
+              <%= link_to "Create account", new_user_path, class: "btn btn-neutral btn-sm rounded-full px-5" %>
+            <% end %>
+          </div>
+        </div>
+      </header>
+
+      <main class="mx-auto flex min-h-[calc(100vh-73px)] w-full max-w-6xl px-4 py-8 sm:px-6 lg:px-8">
+        <%= yield %>
+      </main>
+    </div>
+    <script>
+      (() => {
+        const root = document.documentElement;
+        const button = document.querySelector("[data-theme-toggle]");
+        const label = document.querySelector("[data-theme-label]");
+
+        const syncLabel = () => {
+          if (!label) return;
+          label.textContent = root.getAttribute("data-theme") === "dim" ? "Day mode" : "Night mode";
+        };
+
+        syncLabel();
+
+        button?.addEventListener("click", () => {
+          const nextTheme = root.getAttribute("data-theme") === "dim" ? "lofi" : "dim";
+          root.setAttribute("data-theme", nextTheme);
+          localStorage.setItem("streettoys-theme", nextTheme);
+          syncLabel();
+        });
+      })();
+    </script>
+  </body>
+</html>

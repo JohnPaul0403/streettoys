@@ -1,0 +1,77 @@
+<% cache post_cache_key(post) do %>
+  <article id="<%= dom_id post %>" class="mx-auto w-full max-w-3xl overflow-hidden rounded-[2%] border border-base-300 bg-base-100 shadow-sm transition-colors hover:border-base-content/25">
+    <div>
+      <div class="border-b border-base-300 bg-base-200">
+        <% if post.images.attached? %>
+          <%= link_to post_path(post), class: "block" do %>
+            <%= post_image_tag post.images.first, class: "aspect-[4/3] max-h-80 w-full object-cover" %>
+          <% end %>
+        <% else %>
+          <div class="grid min-h-[16rem] place-items-center bg-base-200 text-base-content/40">
+            <span class="text-xs uppercase tracking-[0.35em]">No image</span>
+          </div>
+        <% end %>
+      </div>
+
+      <div class="flex flex-col justify-between p-6 sm:p-7">
+        <div class="space-y-5">
+          <div class="space-y-3">
+            <div class="flex flex-wrap items-center gap-2 text-[11px] uppercase tracking-[0.26em] text-base-content/42">
+              <span><%= time_ago_in_words(post.created_at) %> ago</span>
+              <% if post.user == Current.user %>
+                <span class="rounded-full border border-base-content/20 px-2 py-1 text-base-content">Your post</span>
+              <% end %>
+            </div>
+
+            <h2 class="text-2xl font-black leading-tight tracking-tight sm:text-3xl">
+              <%= link_to(post.title.presence || "Untitled post", post_path(post), class: "transition hover:opacity-70") %>
+            </h2>
+
+            <% if (excerpt = post_excerpt(post, length: 150)).present? %>
+              <p class="text-sm leading-7 text-base-content/70"><%= excerpt %></p>
+            <% end %>
+          </div>
+
+          <div class="space-y-2 border-t border-base-300 pt-4">
+            <div class="text-[11px] uppercase tracking-[0.26em] text-base-content/40">Posted by</div>
+            <div class="flex items-center justify-between gap-3">
+              <div>
+                <div class="text-base font-bold">
+                  <% if post.user.profile.present? %>
+                    <%= link_to "@#{profile_name_for(post.user)}", profile_path(post.user.profile), class: "transition hover:opacity-70" %>
+                  <% else %>
+                    @<%= profile_name_for(post.user) %>
+                  <% end %>
+                </div>
+                <div class="mt-1 text-sm text-base-content/55"><%= profile_title_for(post.user) %></div>
+              </div>
+
+              <div class="avatar placeholder">
+                <div class="w-12 rounded-[2%] border border-base-300 bg-base-200 text-base-content">
+                  <span class="text-sm font-bold"><%= profile_name_for(post.user).first(2).upcase %></span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <% if post.tag_list.any? %>
+            <div class="flex flex-wrap gap-2">
+              <% post.tag_list.each do |tag| %>
+                <span class="rounded-full border border-base-300 px-3 py-1 text-[11px] uppercase tracking-[0.18em] text-base-content/60"><%= tag %></span>
+              <% end %>
+            </div>
+          <% end %>
+        </div>
+
+        <div class="mt-6 flex flex-wrap items-center gap-2 border-t border-base-300 pt-5">
+          <%= link_to "View post", post_path(post), class: "btn btn-neutral btn-sm rounded-full px-5" %>
+
+          <% if post.user == Current.user %>
+            <%= link_to "Edit", edit_post_path(post), class: "btn btn-ghost btn-sm rounded-full px-4" %>
+            <%= button_to "Delete", post, method: :delete, class: "btn btn-ghost btn-sm rounded-full px-4 text-error hover:bg-error/10", data: { turbo_confirm: "Delete this post?" } %>
+          <% end %>
+        </div>
+      </div>
+    </div>
+  </article>
+<% end %>

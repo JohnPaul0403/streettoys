@@ -1,0 +1,55 @@
+<section class="hero w-full">
+  <div class="hero-content w-full max-w-md px-0">
+    <div class="card w-full bg-base-100 shadow-xl">
+      <div class="card-body gap-5">
+        <div class="space-y-2">
+          <h1 class="text-3xl font-black tracking-tight">Create account</h1>
+          <p class="text-sm text-base-content/70">Join Streettoys and start posting BMX and toy street photos.</p>
+        </div>
+
+        <% if @user.errors.any? %>
+          <div class="alert alert-error">
+            <span><%= @user.errors.full_messages.to_sentence %></span>
+          </div>
+        <% end %>
+
+        <%= form_with model: @user, class: "space-y-4" do |form| %>
+          <label class="form-control w-full">
+            <div class="label">
+              <span class="label-text">Email</span>
+            </div>
+            <%= form.email_field :email_address, required: true, autofocus: true, autocomplete: "username", placeholder: "you@example.com", class: "input input-bordered w-full" %>
+          </label>
+
+          <label class="form-control w-full">
+            <div class="label">
+              <span class="label-text">Password</span>
+            </div>
+            <%= form.password_field :password, required: true, autocomplete: "new-password", maxlength: 72, placeholder: "At least 8 characters", class: "input input-bordered w-full" %>
+          </label>
+
+          <label class="form-control w-full">
+            <div class="label">
+              <span class="label-text">Confirm password</span>
+            </div>
+            <%= form.password_field :password_confirmation, required: true, autocomplete: "new-password", maxlength: 72, placeholder: "Repeat your password", class: "input input-bordered w-full" %>
+          </label>
+
+          <%= form.submit "Create account", class: "btn btn-neutral w-full" %>
+        <% end %>
+
+        <% if google_oauth_enabled? %>
+          <div class="divider text-xs uppercase tracking-[0.24em] text-base-content/40">or</div>
+
+          <%= button_to "/auth/google_oauth2", method: :post, form: { data: { turbo: false } }, class: "btn w-full rounded-full border border-base-300 bg-base-100 text-base-content shadow-none hover:bg-base-200" do %>
+            Sign up with Google
+          <% end %>
+        <% end %>
+
+        <div class="text-sm">
+          <%= link_to "Already have an account? Sign in", new_session_path, class: "link" %>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>

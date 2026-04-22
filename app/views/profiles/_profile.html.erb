@@ -1,0 +1,32 @@
+<% cache profile_cache_key(profile) do %>
+  <article id="<%= dom_id profile %>" class="card border border-base-300 bg-base-100 shadow-lg">
+    <div class="card-body gap-4">
+      <div class="flex items-center gap-4">
+        <div class="avatar placeholder">
+          <div class="w-14 rounded-[2%] bg-neutral text-neutral-content">
+            <span class="font-bold"><%= profile.username.first(2).upcase %></span>
+          </div>
+        </div>
+        <div>
+          <h2 class="text-xl font-black">@<%= profile.username %></h2>
+          <p class="text-sm text-base-content/60"><%= profile.title.presence || "Streettoys member" %></p>
+        </div>
+      </div>
+
+      <% if profile.bio.present? %>
+        <div class="prose prose-sm max-w-none text-base-content prose-p:text-base-content/75">
+          <%= profile.bio %>
+        </div>
+      <% else %>
+        <p class="text-sm text-base-content/60">No bio yet.</p>
+      <% end %>
+
+      <div class="card-actions justify-between border-t border-base-300 pt-4">
+      <%= link_to "View profile", profile_path(profile), class: "btn btn-neutral btn-sm" %>
+        <% if profile.user == Current.user %>
+          <%= link_to "Edit", edit_profile_path(profile), class: "btn btn-ghost btn-sm" %>
+        <% end %>
+      </div>
+    </div>
+  </article>
+<% end %>

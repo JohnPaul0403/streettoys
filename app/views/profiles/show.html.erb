@@ -1,0 +1,74 @@
+<% content_for :title, @profile.username %>
+
+<section class="w-full space-y-6">
+  <% if notice.present? %>
+    <div class="alert alert-success" id="notice"><span><%= notice %></span></div>
+  <% end %>
+
+  <div class="space-y-2">
+    <p class="text-sm uppercase tracking-[0.3em] text-base-content/45">Profile</p>
+    <h1 class="text-4xl font-black tracking-tight sm:text-5xl">@<%= @profile.username %></h1>
+  </div>
+
+  <div class="grid gap-6 xl:grid-cols-[22rem_minmax(0,1fr)]">
+    <aside class="space-y-4">
+      <% cache profile_show_cache_key(@profile) do %>
+        <div class="card overflow-hidden rounded-[2%] border border-base-300/70 bg-base-100 shadow-xl shadow-base-300/20">
+          <div class="h-24 bg-base-200"></div>
+          <div class="card-body gap-5">
+            <div class="-mt-14 flex items-center gap-4">
+              <div class="avatar placeholder">
+                <div class="w-24 rounded-[2%] border-4 border-base-100 bg-neutral text-neutral-content shadow-xl">
+                  <span class="text-2xl font-black"><%= @profile.username.first(2).upcase %></span>
+                </div>
+              </div>
+              <div>
+                <h1 class="text-3xl font-black tracking-tight">@<%= @profile.username %></h1>
+                <p class="text-sm text-base-content/60"><%= @profile.title.presence || "Streettoys member" %></p>
+              </div>
+            </div>
+
+            <% if @profile.bio.present? %>
+              <div class="prose prose-sm max-w-none text-base-content prose-p:text-base-content/75">
+                <%= @profile.bio %>
+              </div>
+            <% end %>
+
+            <div class="stats stats-vertical border border-base-300/70 bg-base-200/80 shadow-sm">
+              <div class="stat py-4">
+                <div class="stat-title">Posts</div>
+                <div class="stat-value text-base-content"><%= @profile.user.posts.count %></div>
+              </div>
+            </div>
+
+            <div class="flex flex-wrap gap-2">
+              <%= link_to "Back to profiles", profiles_path, class: "btn btn-ghost rounded-full px-5" %>
+              <% if @profile.user == Current.user %>
+                <%= link_to "Edit profile", edit_profile_path(@profile), class: "btn btn-neutral rounded-full px-5" %>
+              <% end %>
+            </div>
+          </div>
+        </div>
+      <% end %>
+    </aside>
+
+    <div class="space-y-4">
+      <div class="space-y-1">
+        <p class="text-sm uppercase tracking-[0.25em] text-base-content/50">Posts</p>
+        <h2 class="text-3xl font-black tracking-tight">Shots by @<%= @profile.username %></h2>
+      </div>
+
+      <% if @profile.user.posts.any? %>
+        <div class="grid gap-6">
+          <% @profile.user.posts.with_attached_images.order(created_at: :desc).each do |post| %>
+            <%= render partial: "posts/post", locals: { post: post } %>
+          <% end %>
+        </div>
+      <% else %>
+        <div class="rounded-[2%] border border-dashed border-base-300 bg-base-100 p-10 text-center shadow-sm">
+          <p class="text-base-content/70">No posts from this profile yet.</p>
+        </div>
+      <% end %>
+    </div>
+  </div>
+</section>

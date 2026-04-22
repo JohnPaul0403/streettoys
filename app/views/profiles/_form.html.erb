@@ -1,0 +1,37 @@
+<%= form_with(model: profile, class: "space-y-5") do |form| %>
+  <% if profile.errors.any? %>
+    <div class="alert alert-error">
+      <span><%= profile.errors.full_messages.to_sentence %></span>
+    </div>
+  <% end %>
+
+  <label class="form-control w-full">
+    <div class="label">
+      <span class="label-text">Username</span>
+    </div>
+    <%= form.text_field :username, class: "input input-bordered w-full", placeholder: "street-setup-jp" %>
+  </label>
+
+  <label class="form-control w-full">
+    <div class="label">
+      <span class="label-text">Title</span>
+    </div>
+    <%= form.text_field :title, class: "input input-bordered w-full", placeholder: "BMX street rider" %>
+  </label>
+
+  <label class="form-control w-full">
+    <div class="label">
+      <span class="label-text">Profile picture</span>
+    </div>
+    <%= form.file_field :profile_picture, accept: "image/*", class: "file-input file-input-bordered w-full" %>
+  </label>
+
+  <div class="form-control w-full">
+    <div class="label">
+      <span class="label-text">Bio</span>
+    </div>
+    <%= form.rich_textarea :bio, class: "min-h-40 rounded-[2%] border border-base-300 bg-base-100" %>
+  </div>
+
+  <%= form.submit class: "btn btn-neutral w-full sm:w-auto" %>
+<% end %>

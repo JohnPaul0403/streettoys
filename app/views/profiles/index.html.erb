@@ -1,0 +1,39 @@
+<% content_for :title, "Profiles" %>
+
+<section class="w-full space-y-8">
+  <% if notice.present? %>
+    <div class="alert alert-success" id="notice"><span><%= notice %></span></div>
+  <% end %>
+
+  <div class="relative overflow-hidden rounded-[2%] border border-base-300/70 bg-base-100 px-6 py-8 shadow-2xl shadow-base-300/20 sm:px-8 lg:px-10">
+    <div class="relative flex flex-col gap-5 lg:flex-row lg:items-end lg:justify-between">
+      <div class="space-y-2">
+        <p class="text-sm uppercase tracking-[0.3em] text-base-content/50">Riders and collectors</p>
+        <h1 class="text-4xl font-black tracking-tight sm:text-5xl">Profiles with actual personality.</h1>
+        <p class="max-w-2xl text-sm leading-6 text-base-content/70 sm:text-base">See who is posting, what they ride, and the setups they keep coming back to. Profiles should feel like scenes, not database rows.</p>
+      </div>
+      <% if authenticated? %>
+        <%= link_to(Current.user.profile ? "Edit my profile" : "Create my profile", Current.user.profile ? edit_profile_path(Current.user.profile) : new_profile_path, class: "btn btn-neutral rounded-full px-6") %>
+      <% else %>
+        <%= link_to "Create your account", new_user_path, class: "btn btn-neutral rounded-full px-6" %>
+      <% end %>
+    </div>
+  </div>
+
+  <% if @profiles.any? %>
+    <div class="grid gap-6 md:grid-cols-2 xl:grid-cols-3">
+      <% @profiles.each do |profile| %>
+        <%= render profile %>
+      <% end %>
+    </div>
+  <% else %>
+    <div class="hero rounded-[2%] border border-dashed border-base-300 bg-base-100 py-16 shadow-sm">
+      <div class="hero-content text-center">
+        <div class="space-y-3">
+          <h2 class="text-2xl font-black">No profiles yet</h2>
+          <p class="text-base-content/70">Create the first profile so people can connect posts to a face and name.</p>
+        </div>
+      </div>
+    </div>
+  <% end %>
+</section>

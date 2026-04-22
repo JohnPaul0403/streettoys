@@ -1,0 +1,21 @@
+<% content_for :title, "Create profile" %>
+
+<section class="w-full">
+  <div class="mx-auto w-full max-w-3xl">
+    <div class="card border border-base-300 bg-base-100 shadow-xl">
+      <div class="card-body gap-6">
+        <div class="space-y-2">
+          <p class="text-sm uppercase tracking-[0.25em] text-base-content/50">Profile setup</p>
+          <h1 class="text-4xl font-black tracking-tight">Create your profile</h1>
+          <p class="text-sm text-base-content/70">This is what people will see when they open your posts.</p>
+        </div>
+
+        <%= render "form", profile: @profile %>
+
+        <div>
+          <%= link_to "Back to profiles", profiles_path, class: "btn btn-ghost" %>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>

@@ -1,0 +1,43 @@
+<%
+test_database_url = ENV["TEST_DATABASE_URL"].presence || ENV["DATABASE_URL"]
+
+if test_database_url.present?
+  require "uri"
+
+  uri = URI.parse(test_database_url)
+  uri.path = "/#{ENV.fetch("TEST_DATABASE_NAME", "streettoys_test")}"
+  test_database_url = uri.to_s
+end
+%>
+
+default: &default
+  adapter: postgresql
+  encoding: unicode
+  max_connections: <%= ENV.fetch("RAILS_MAX_THREADS") { 5 } %>
+
+development:
+  <<: *default
+  url: <%= ENV.fetch("DATABASE_URL") %>
+
+test:
+  <<: *default
+  url: <%= test_database_url || "postgresql:///#{ENV.fetch("TEST_DATABASE_NAME", "streettoys_test")}" %>
+
+production:
+  primary: &primary_production
+    <<: *default
+    database: streettoys_production
+    username: streettoys
+    password: <%= ENV["STREETTOYS_DATABASE_PASSWORD"] %>
+  cache:
+    <<: *primary_production
+    database: streettoys_production_cache
+    migrations_paths: db/cache_migrate
+  queue:
+    <<: *primary_production
+    database: streettoys_production_queue
+    migrations_paths: db/queue_migrate
+  cable:
+    <<: *primary_production
+    database: streettoys_production_cable
+    migrations_paths: db/cable_migrate
